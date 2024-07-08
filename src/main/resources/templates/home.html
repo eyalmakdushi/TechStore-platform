@@ -1,9 +1,135 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home</title>
+    <title>Home - E-commerce Platform</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            padding: 10px 0;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 10px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        nav ul li a:hover {
+            background-color: #555;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero {
+            text-align: center;
+            padding: 50px 0;
+        }
+        .hero img {
+            max-width: 100%;
+            height: auto;
+        }
+        .hero h1 {
+            margin-top: 0;
+            font-size: 2.5em;
+        }
+        .products {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .product {
+            width: 30%;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .product img {
+            max-width: 100%;
+            height: auto;
+        }
+        .product h2 {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+        .product p {
+            color: #666;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
-<h1>Welcome to the Home Page</h1>
+<header>
+    <h1>E-commerce Platform</h1>
+</header>
+<nav>
+    <ul>
+        <li><a th:href="@{/}">Home</a></li>
+        <li><a th:href="@{/cart}">Cart</a></li>
+        <li><a th:href="@{/product-details}">Product Details</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <div class="hero">
+        <img th:src="@{/images/hero-image.png}" alt="Hero Image">
+        <h1>Welcome to Our E-commerce Platform!</h1>
+        <p>Your one-stop shop for all your needs.</p>
+    </div>
+    <div class="products">
+        <div class="product">
+            <img th:src="@{/images/product1.jpg}" alt="Product 1">
+            <h2>Product 1</h2>
+            <p>High-quality product 1 description.</p>
+        </div>
+        <div class="product">
+            <img th:src="@{/images/product2.jpg}" alt="Product 2">
+            <h2>Product 2</h2>
+            <p>High-quality product 2 description.</p>
+        </div>
+        <div class="product">
+            <img th:src="@{/images/product3.jpg}" alt="Product 3">
+            <h2>Product 3</h2>
+            <p>High-quality product 3 description.</p>
+        </div>
+    </div>
+</div>
+<footer>
+    <p>&copy; 2024 E-commerce Platform. All rights reserved.</p>
+</footer>
 </body>
 </html>
