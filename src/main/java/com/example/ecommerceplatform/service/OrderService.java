@@ -1,6 +1,6 @@
 package com.example.ecommerceplatform.service;
 
-import com.example.ecommerceplatform.entity.Order;
+import com.example.ecommerceplatform.model.Order;
 import com.example.ecommerceplatform.entity.User;
 import com.example.ecommerceplatform.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +14,11 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    // Service methods
-    public Order save(Order order) {
-        return orderRepository.save(order);
-    }
-
-    public Order findById(Long id) {
-        return orderRepository.findById(id).orElse(null);
-    }
-
-    public List<Order> findByUser(User user) {
+    public List<Order> getOrdersByUser(User user) {
         return orderRepository.findByUser(user);
+    }
+
+    public void saveOrder(Order order) {
+        orderRepository.save(order);
     }
 }
