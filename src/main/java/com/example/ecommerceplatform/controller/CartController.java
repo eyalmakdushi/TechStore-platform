@@ -1,67 +1,65 @@
 package com.example.ecommerceplatform.controller;
 
+import com.example.ecommerceplatform.entity.Product;
+import com.example.ecommerceplatform.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/cart")
 public class CartController {
 
-    @GetMapping("/cart")
-    public String cart(Model model) {
-        List<CartItem> cartItems = new ArrayList<>();
-        cartItems.add(new CartItem("Product 1", 1, 10.00));
-        cartItems.add(new CartItem("Product 2", 2, 15.00));
-        cartItems.add(new CartItem("Product 3", 1, 20.00));
+    private final ProductService productService;
 
-        double totalAmount = cartItems.stream().mapToDouble(CartItem::getTotal).sum();
+    @Autowired
+    public CartController(ProductService productService) {
+        this.productService = productService;
+    }
 
-        model.addAttribute("cartItems", cartItems);
-        model.addAttribute("totalAmount", totalAmount);
-
+    @GetMapping
+    public String viewCart(HttpSession session, Model model) {
+        List<Product> cart = (List<Product>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
+        model.addAttribute("cart", cart);
         return "cart";
     }
 
-    static class CartItem {
-        private String productName;
-        private int quantity;
-        private double price;
-
-        public CartItem(String productName, int quantity, double price) {
-            this.productName = productName;
-            this.quantity = quantity;
-            this.price = price;
+    @PostMapping("/add")
+    public String addToCart(@RequestParam Long productId, HttpSession session) {
+        Product product = productService.getProductById(productId);
+        List<Product> cart = (List<Product>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
         }
+        cart.add(product);
+        session.setAttribute("cart", cart);
+        return "redirect:/cart";
+    }
 
-        public String getProductName() {
-            return productName;
+    @GetMapping("/checkout")
+    public String checkout(HttpSession session, Model model) {
+        List<Product> cart = (List<Product>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
         }
+        double total = cart.stream().mapToDouble(Product::getPrice).sum();
+        model.addAttribute("cart", cart);
+        model.addAttribute("total", total);
+        return "checkout";
+    }
 
-        public void setProductName(String productName) {
-            this.productName = productName;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
-        }
-
-        public double getPrice() {
-            return price;
-        }
-
-        public void setPrice(double price) {
-            this.price = price;
-        }
-
-        public double getTotal() {
-            return this.price * this.quantity;
-        }
+    @PostMapping("/checkout")
+    public String processCheckout(HttpSession session) {
+        // Process payment and clear the cart
+        session.removeAttribute("cart");
+        return "redirect:/home";
     }
 }

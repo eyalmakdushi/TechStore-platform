@@ -1,15 +1,19 @@
 package com.example.ecommerceplatform.config;
 
-import com.example.ecommerceplatform.entity.User;
 import com.example.ecommerceplatform.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfig {
 
     private final UserService userService;
@@ -21,30 +25,29 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests(auth -> auth
-                        .requestMatchers("/", "/register", "/login", "/css/**", "/images/**").permitAll()
-                        .anyRequest().authenticated()
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers("/", "/cart", "/checkout", "/product-details/**", "/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
-                        .permitAll()
+                .formLogin(formLogin ->
+                        formLogin
+                                .loginPage("/login")
+                                .defaultSuccessUrl("/", true)
+                                .permitAll()
                 )
-                .logout(logout -> logout
-                        .permitAll()
+                .logout(logout ->
+                        logout
+                                .permitAll()
                 );
 
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return email -> {
-            User user = userService.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-            return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
-                    .password(user.getPassword())
-                    .authorities("USER").build();
-        };
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
+
 }

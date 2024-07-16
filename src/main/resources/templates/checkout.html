@@ -2,15 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Shopping Cart</title>
+    <title>Checkout</title>
 </head>
 <body>
-<h1>Shopping Cart</h1>
+<h1>Checkout</h1>
 <ul>
     <th:block th:each="product : ${cart}">
         <li th:text="${product.name} + ' - ' + ${product.price}"></li>
     </th:block>
 </ul>
-<a href="/checkout">Checkout</a>
+<p>Total: <span th:text="${total}"></span></p>
+<form action="/cart/checkout" method="post">
+    <button type="submit">Confirm Purchase</button>
+</form>
 </body>
 </html>
